@@ -1,0 +1,163 @@
+<form fxFlex="1 1" [formGroup]="formGroup" (ngSubmit)="createLocation()" fxLayout="column" fxLayoutGap="1em"
+      fxFlexOffset="2em">
+
+  <mat-form-field>
+    <input matInput formControlName="name" placeholder="Name">
+    <mat-error *ngIf="formGroup.controls['name'].hasError('required')" translate>
+      Required
+    </mat-error>
+    <mat-error *ngIf="formGroup.controls['name'].hasError('minlength')" translate>
+      Minimum 3 characters
+    </mat-error>
+    <mat-error *ngIf="formGroup.controls['name'].hasError('maxlength')" translate>
+      Maximum 45 characters
+    </mat-error>
+    <mat-error *ngIf="formGroup.controls['name'].hasError('message')">
+      {{formGroup.controls['name'].getError('message')}}
+    </mat-error>
+  </mat-form-field>
+
+  <div fxLayout="row" fxLayoutGap="1em" stop-propagation>
+
+    <mat-form-field fxFlex="40">
+      <input matInput placeholder="Latitude" formControlName="coordinateLat">
+      <mat-error *ngIf="formGroup.controls['coordinateLat'].hasError('required')" translate>
+        Required
+      </mat-error>
+      <mat-error *ngIf="formGroup.controls['coordinateLat'].hasError('message')">
+        {{formGroup.controls['coordinateLat'].getError('message')}}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="40">
+      <input matInput placeholder="Longitude" formControlName="coordinateLon">
+      <mat-error *ngIf="formGroup.controls['coordinateLon'].hasError('required')" translate>
+        Required
+      </mat-error>
+      <mat-error *ngIf="formGroup.controls['coordinateLon'].hasError('message')">
+        {{formGroup.controls['coordinateLon'].getError('message')}}
+      </mat-error>
+    </mat-form-field>
+
+    <div *ngIf="addLocations.length < 1" fxFlex="20">
+      <button mat-icon-button color="primary" (click)="addNewLocation()">
+        <mat-icon>add_box</mat-icon>
+      </button>
+      <button mat-icon-button color="primary" (click)="removeNewLocation()" [disabled]="addLocations.length <= 1">
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="addLocations.length >= 1" stop-propagation>
+    <div *ngFor="let key of keys(addLocations);let last" fxLayout="row" fxLayoutGap="1em">
+
+      <mat-form-field fxFlex="40">
+        <input matInput placeholder="Latitude" [ngModel]="addLocations[key].lat"
+               [ngModelOptions]="{standalone: true}">
+      </mat-form-field>
+
+      <mat-form-field fxFlex="40">
+        <input matInput placeholder="Longitude" [ngModel]="addLocations[key].lon"
+               [ngModelOptions]="{standalone: true}">
+      </mat-form-field>
+
+      <div *ngIf="(addLocations.length || 1) === (parseInt(last)+1)" fxFlex="20">
+        <button mat-icon-button color="primary" (click)="addNewLocation()">
+          <mat-icon>add_box</mat-icon>
+        </button>
+        <button mat-icon-button color="primary" (click)="removeNewLocation()" [disabled]="addLocations.length < 1">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+  <div fxLayout="row" fxLayoutGap="1em">
+    <mat-form-field fxFlex="20">
+      <input matInput placeholder="Zip" type="number" formControlName="zip">
+      <mat-error *ngIf="formGroup.controls['zip'].hasError('required')" translate>
+        Required
+      </mat-error>
+      <mat-error *ngIf="formGroup.controls['zip'].hasError('minlength')" translate>
+        Minimum 4 characters
+      </mat-error>
+      <mat-error *ngIf="formGroup.controls['zip'].hasError('maxlength')" translate>
+        Maximum 10 characters
+      </mat-error>
+      <mat-error *ngIf="formGroup.controls['zip'].hasError('message')">
+        {{formGroup.controls['zip'].getError('message')}}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="80">
+      <input matInput placeholder="City" type="text" formControlName="city">
+      <mat-error *ngIf="formGroup.controls['city'].hasError('required')" translate>
+        Required
+      </mat-error>
+      <mat-error *ngIf="formGroup.controls['city'].hasError('minlength')" translate>
+        Minimum 3 characters
+      </mat-error>
+      <mat-error *ngIf="formGroup.controls['city'].hasError('maxlength')" translate>
+        Maximum 255 characters
+      </mat-error>
+      <mat-error *ngIf="formGroup.controls['city'].hasError('message')">
+        {{formGroup.controls['city'].getError('message')}}
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="1em">
+    <mat-form-field fxFlex="100">
+      <input matInput placeholder="Street" type="text" formControlName="street">
+      <mat-error *ngIf="formGroup.controls['street'].hasError('minlength')" translate>
+        Minimum 10 characters
+      </mat-error>
+      <mat-error *ngIf="formGroup.controls['street'].hasError('maxlength')" translate>
+        Maximum 1000 characters
+      </mat-error>
+      <mat-error *ngIf="formGroup.controls['street'].hasError('message')">
+        {{formGroup.controls['street'].getError('message')}}
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="1em">
+    <mat-form-field fxFlex="100">
+      <textarea matInput placeholder="Optional description" formControlName="description"></textarea>
+      <mat-error *ngIf="formGroup.controls['description'].hasError('minlength')" translate>
+        Minimum 10 characters
+      </mat-error>
+      <mat-error *ngIf="formGroup.controls['description'].hasError('maxlength')" translate>
+        Maximum 1000 characters
+      </mat-error>
+      <mat-error *ngIf="formGroup.controls['description'].hasError('message')">
+        {{formGroup.controls['description'].getError('message')}}
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div fxLayout="row">
+    <button mat-raised-button type="button" (click)="uploadImages()" stop-propagation>Upload Images</button>
+  </div>
+
+  <mat-card class="image mat-elevation-z8" *ngFor="let image of images">
+    <mat-card-content>
+      <img (click)="removeImage(image.url)" mat-card-image src="{{env.baseUrl}}/{{image.url}}">
+    </mat-card-content>
+  </mat-card>
+
+  <!--<mat-form-field>-->
+  <!--<mat-select placeholder="WAVETROPHY" formControlName="trophy">-->
+  <!--<mat-option *ngFor="let trophy of trophies" value="{{trophy.hash}}">-->
+  <!--{{trophy.name}} ({{trophy.country}})-->
+  <!--</mat-option>-->
+  <!--</mat-select>-->
+  <!--<mat-error>-->
+  <!--{{formGroupcontrols['trophy'].getError('specific')}}-->
+  <!--</mat-error>-->
+  <!--</mat-form-field>-->
+
+  <button mat-raised-button type="submit" color="primary">Add</button>
+</form>

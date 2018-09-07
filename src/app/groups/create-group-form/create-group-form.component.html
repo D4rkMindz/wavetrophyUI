@@ -1,0 +1,25 @@
+<form [formGroup]="formGroup" (submit)="createGroup()" fxLayout="column" #createGroupDirective="ngForm">
+  <h3 translate>Create Group</h3>
+
+  <mat-form-field>
+    <input type="text" formControlName="name" matInput placeholder="{{'Name'| translate}}">
+
+    <mat-error *ngIf="formGroup.controls['name'].hasError('required')" translate>
+      Required
+    </mat-error>
+    <mat-error *ngIf="formGroup.controls['name'].hasError('minlength')" translate>
+      Minimum 3 characters
+    </mat-error>
+    <mat-error *ngIf="formGroup.controls['name'].hasError('maxlength')" translate>
+      Maximum 250 characters
+    </mat-error>
+    <mat-error *ngIf="formGroup.controls['name'].hasError('message')">
+      {{formGroup.controls['name'].getError('message')}}
+    </mat-error>
+  </mat-form-field>
+
+  <div>
+    <button type="submit" fxFlex="10" mat-raised-button color="primary" translate>Create</button>
+  </div>
+
+</form>
