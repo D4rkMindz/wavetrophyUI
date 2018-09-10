@@ -6,7 +6,7 @@
  * To optimize your production builds, you should only import the components used in your app.
  */
 
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -15,7 +15,6 @@ import {
   MatCheckboxModule,
   MatChipsModule,
   MatCommonModule,
-  MatDatepickerModule,
   MatDialogModule,
   MatDividerModule,
   MatExpansionModule,
@@ -46,6 +45,7 @@ import {
   MatToolbarModule,
   MatTooltipModule,
 } from '@angular/material';
+import {MatDatepickerModule, MatMomentDateModule} from '@coachcare/datepicker';
 
 @NgModule({
   exports: [
@@ -85,7 +85,10 @@ import {
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDatepickerModule,
+    MatMomentDateModule,
   ]
 })
-export class MaterialModule { }
+export class MaterialModule {
+}

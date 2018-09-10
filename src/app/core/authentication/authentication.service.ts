@@ -5,6 +5,7 @@ import {Logger} from '../logger.service';
 import {environment} from '@env/environment';
 import {catchError, map} from 'rxjs/operators';
 import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Router} from '@angular/router';
 
 export interface Credentials {
   username: string;
@@ -31,7 +32,7 @@ export class AuthenticationService {
   private readonly _credentialsKey?: string = null;
   private _credentials: Credentials | null;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private router: Router) {
     this._credentialsKey = environment.keys.credentials;
     const savedCredentials = sessionStorage.getItem(this._credentialsKey) || localStorage.getItem(this._credentialsKey);
     if (savedCredentials) {
@@ -61,7 +62,7 @@ export class AuthenticationService {
             token: res.token,
             expiresAt: res.expires_at,
           };
-          this.setCredentials(credentials);
+          this.setCredentials(credentials, context.remember);
           return this.credentials;
         }
         throwError(extract('Login invalid'));
@@ -75,6 +76,7 @@ export class AuthenticationService {
   logout(): Observable<boolean> {
     // Customize credentials invalidation here
     this.setCredentials();
+    this.router.navigate(['/login']);
     return of(true);
   }
 

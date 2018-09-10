@@ -11,7 +11,6 @@ import {SharedModule} from '@app/shared';
 import {FlexLayoutModule} from '@angular/flex-layout';
 import {MaterialModule} from '@app/material.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {HomeRoutingModule} from '@app/home/home-routing.module';
 
 @NgModule({
   imports: [
@@ -23,7 +22,6 @@ import {HomeRoutingModule} from '@app/home/home-routing.module';
     MaterialModule,
     FormsModule,
     ReactiveFormsModule,
-    HomeRoutingModule,
     LocationsRoutingModule
   ],
   declarations: [LocationsComponent, CreateLocationFormComponent],

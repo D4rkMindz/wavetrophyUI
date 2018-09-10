@@ -32,7 +32,7 @@ export class TrophiesComponent implements OnInit {
   }
 
   deleteTrophy(hash: string) {
-    // TODO implement deleteTrophy() method
+
     return true;
   }
 

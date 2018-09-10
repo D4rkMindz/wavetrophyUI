@@ -6,9 +6,9 @@ import {Coordinate, CoordinateModel} from '@app/shared/models/coordinate.model';
 import {ImageUploadComponent} from '@app/shared/image-upload/image-upload.component';
 import {MatDialog} from '@angular/material';
 import {extract} from '@app/core';
-import {GroupModel} from '@app/shared/models/group.model';
 import {Image, ImageModel} from '@app/shared/models/image.model';
 import {environment} from '@env/environment';
+import {Location} from '@app/shared/models/location.model';
 
 @Component({
   selector: 'app-create-location-form',
@@ -19,13 +19,12 @@ export class CreateLocationFormComponent implements OnInit {
 
   @Input('trophyHash') trophyHash: string;
   @Input('groupHash') groupHash: string;
-  @Output('onGroupCreated') output: EventEmitter<{ hash: string, name: string }> = new EventEmitter();
-  @ViewChild('createGroupDirective') directive: NgForm;
+  @Output('onLocationCreated') output: EventEmitter<Location> = new EventEmitter();
+  @ViewChild('createLocationDirective') directive: NgForm;
 
-  console = console;
   formGroup: FormGroup;
   addLocations: Coordinate[] = [];
-  images: Image[] = [new ImageModel('img/cache/i_180906/wt5b91574b590d59.02408967.JPG')];
+  images: Image[] = [];
   env = environment;
 
   constructor(private locationService: LocationService,
@@ -33,23 +32,23 @@ export class CreateLocationFormComponent implements OnInit {
               public dialog: MatDialog,
               private snackbar: SnackbarService) {
     this.formGroup = this.fb.group({
-      name: ['Möhlin Bürgerhaus', [Validators.required, Validators.minLength(3), Validators.maxLength(45)]],
-      zip: ['4313', [Validators.required, Validators.minLength(4), Validators.maxLength(10)]],
-      city: ['Möhlin', [Validators.required, Validators.minLength(3), Validators.maxLength(255)]],
-      street: ['Ulmenstrasse 24', [Validators.required, Validators.minLength(3), Validators.maxLength(255)]],
-      coordinateLat: ['8.00', [Validators.required]],
-      coordinateLon: ['47.00', [Validators.required]],
-      description: ['Beschreibung', [Validators.minLength(10), Validators.maxLength(1000)]],
+      name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(45)]],
+      zip: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(10)]],
+      city: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(255)]],
+      street: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(255)]],
+      coordinateLat: ['', [Validators.required]],
+      coordinateLon: ['', [Validators.required]],
+      description: ['', [Validators.minLength(10), Validators.maxLength(1000)]],
     });
   }
 
-  ngOnInit() {
-    if (!this.trophyHash) {
-      throw new Error('[trophyHash] must be provided for the create-location-form component');
-    }
-    if (!this.groupHash) {
-      throw new Error('[groupHash] must be provided for the create-location-form component');
-    }
+    ngOnInit() {
+      if (!this.trophyHash) {
+        throw new Error('[trophyHash] must be provided for the create-location-form component');
+      }
+      if (!this.groupHash) {
+        throw new Error('[groupHash] must be provided for the create-location-form component');
+      }
   }
 
   keys(obj: any) {
@@ -85,7 +84,7 @@ export class CreateLocationFormComponent implements OnInit {
   }
 
   createLocation() {
-    if (this.formGroup.dirty) {
+    if (this.formGroup.invalid === true) {
       return;
     }
     const zip = this.formGroup.controls['zip'].value;
@@ -95,7 +94,11 @@ export class CreateLocationFormComponent implements OnInit {
     const coordinateLat = this.formGroup.controls['coordinateLat'].value;
     const coordinateLon = this.formGroup.controls['coordinateLon'].value;
     const description = this.formGroup.controls['description'].value;
-    const images = this.images;
+    const images: Image[] = [];
+
+    for (const image of this.images) {
+      images.push({url: image.url});
+    }
 
     const coordinates = new CoordinateModel(coordinateLat, coordinateLon);
 
@@ -115,11 +118,14 @@ export class CreateLocationFormComponent implements OnInit {
       images,
     )
       .subscribe((res: any) => {
-        if (typeof res === 'string') {
-          this.snackbar.info(extract(`Created group ${name}`));
+        console.log(res);
+        if ('hash' in res) {
+          this.snackbar.info(extract(`Created location ${res.title}`));
           this.formGroup.reset();
           this.directive.resetForm();
-          this.output.emit(new GroupModel(res, name, this.trophyHash));
+          this.images = [];
+          this.addLocations = [];
+          this.output.emit(res);
           return;
         }
         if ('validation' in res) {

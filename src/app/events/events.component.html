@@ -10,10 +10,11 @@
 
     <mat-card-content>
       <mat-card-content>
-        <app-create-location-form [trophyHash]="trophyHash"
-                                  [groupHash]="groupHash"
-                                  (onLocationCreated)="addLocation($event)">
-        </app-create-location-form>
+        <app-create-event-form [trophyHash]="trophyHash"
+                               [groupHash]="groupHash"
+                               [locationHash]="locationHash"
+                               (onEventCreated)="addEvent($event)">
+        </app-create-event-form>
       </mat-card-content>
     </mat-card-content>
 
@@ -31,33 +32,45 @@
 
       <ng-container matColumnDef="hash">
         <th mat-header-cell *matHeaderCellDef translate>Hash</th>
-        <td mat-cell *matCellDef="let location">{{location.hash}}</td>
+        <td mat-cell *matCellDef="let event">{{event.hash}}</td>
       </ng-container>
 
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef translate>Name</th>
-        <td mat-cell *matCellDef="let location">{{location.name}}</td>
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef translate>Title</th>
+        <td mat-cell *matCellDef="let event">{{event.title}}</td>
       </ng-container>
 
       <ng-container matColumnDef="description">
         <th mat-header-cell *matHeaderCellDef translate>Description</th>
-        <td mat-cell *matCellDef="let location">{{location.description}}</td>
+        <td mat-cell *matCellDef="let event">{{event.description}}</td>
       </ng-container>
 
-      <ng-container matColumnDef="address">
-        <th mat-header-cell *matHeaderCellDef translate>Address</th>
-        <td mat-cell *matCellDef="let location">
-          {{location.address.text.street}} - {{location.address.text.zip}} {{location.address.text.city}}
-          ({{location.address.lat}}/{{location.address.lon}})
+      <ng-container matColumnDef="startDay">
+        <th mat-header-cell *matHeaderCellDef translate>Start</th>
+        <td mat-cell *matCellDef="let event">
+          {{event.start.format('MMMM Do YYYY, h:mm')}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="endDay">
+        <th mat-header-cell *matHeaderCellDef translate>End</th>
+        <td mat-cell *matCellDef="let event">
+          {{event.end.format('MMMM Do YYYY, h:mm')}}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="day">
+        <th mat-header-cell *matHeaderCellDef translate>Day</th>
+        <td mat-cell *matCellDef="let event">
+          {{event.day}}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="action-edit" class="action-column">
         <th mat-header-cell *matHeaderCellDef translate>Edit</th>
-        <td mat-cell *matCellDef="let location">
+        <td mat-cell *matCellDef="let event">
           <button mat-button
                   color="primary"
-                  [routerLink]="[location.hash]"
                   translate>
             EDIT
           </button>
@@ -66,15 +79,15 @@
 
       <ng-container matColumnDef="action-delete" class="action-column">
         <th mat-header-cell *matHeaderCellDef translate>Delete</th>
-        <td mat-cell *matCellDef="let location">
-          <button mat-button color="warn" (click)="deleteLocation(location.hash)" stop-propagation translate>DELETE</button>
+        <td mat-cell *matCellDef="let event">
+          <button mat-button color="warn" (click)="deleteEvent(event.hash)" stop-propagation translate>DELETE</button>
         </td>
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row
-          *matRowDef="let location; columns: displayedColumns;"
-          [routerLink]="[location.hash, 'events']">
+          *matRowDef="let event; columns: displayedColumns;"
+          [routerLink]="[event.hash, 'events']">
       </tr>
     </table>
   </div>

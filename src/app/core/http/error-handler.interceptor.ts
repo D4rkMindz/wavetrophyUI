@@ -7,12 +7,13 @@ import {
   HttpClient,
   HttpErrorResponse
 } from '@angular/common/http';
-import {Observable, of, pipe} from 'rxjs';
-import {catchError, map, switchMap} from 'rxjs/operators';
+import {BehaviorSubject, Observable, of, pipe, throwError} from 'rxjs';
+import {catchError, filter, finalize, map, switchMap, take} from 'rxjs/operators';
 
 import {environment} from '@env/environment';
 import {Logger} from '../logger.service';
-import {AuthenticationService, Credentials} from '@app/core';
+import {AuthenticationService, Credentials, extract} from '@app/core';
+import {SnackbarService} from '@app/core/snackbar.service';
 
 const log = new Logger('ErrorHandlerInterceptor');
 
@@ -24,8 +25,10 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
 
   private auth: AuthenticationService;
   private http: HttpClient;
+  private isRefreshingToken = false;
+  private tokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
 
-  constructor(inj: Injector) {
+  constructor(inj: Injector, private snackbar: SnackbarService) {
     setTimeout(() => {
       this.auth = inj.get(AuthenticationService);
       this.http = inj.get(HttpClient);
@@ -43,47 +46,58 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
   private handleError(response: HttpEvent<any>, request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     log.debug(response);
     if (response instanceof HttpErrorResponse && (response.status === 401 || response.status === 0)) {
-      log.debug('Refreshing token');
-      return this.auth.login(this.auth.credentials)
-        .subscribe((credentials: Credentials) => {
+      if (!this.isRefreshingToken) {
+        this.isRefreshingToken = true;
+        this.tokenSubject.next(null);
+        log.debug('Refreshing token');
+        return this.auth.login(this.auth.credentials)
+          .pipe(
+            switchMap((credentials: Credentials) => {
+              console.log('Refreshed token', credentials);
+              if (credentials.token) {
+                this.tokenSubject.next(credentials.token);
+                return next.handle(this.addHeader(request, credentials.token));
+              }
+              this.logout();
+            }),
+            catchError((err) => {
+              return this.logout();
+            }),
+            finalize(() => {
+              this.isRefreshingToken = false;
+            })
+          );
+      } else {
+        console.log('triggered pipe');
+        return this.tokenSubject.pipe(
+          filter(token => token !== null),
+          take(1),
+          switchMap(token => {
+            return next.handle(this.addHeader(request, token));
+          })
+        );
+      }
 
-          const headers = request.headers.append('X-Token', credentials.token);
-          request = request.clone({headers: headers});
-          console.log(request);
-          return next.handle(request);
-        });
-      // .pipe(
-      //   map((credentials: Credentials) => {
-      //
-      //   })
-      // );
-      // pipe(
-      //   switchMap(() => {
-      //     console.log(this.auth.credentials);
-      //     return this.auth.login(this.auth.credentials);
-      //   }),
-      //   map((credentials: Credentials) => {
-      //   })
-      // );
-      // return this.auth.login(this.auth.credentials).switchMap((credentials: Credentials) => {
-      //   log.debug('Token refreshed');
-      //   const headers = request.headers.append('X-Token', credentials.token);
-      //   request = request.clone({headers: headers});
-      //   this.http.request(request.method, request.url, {
-      //     body: request.body,
-      //     headers: request.headers,
-      //     responseType: request.responseType,
-      //     withCredentials: request.withCredentials,
-      //     params: request.params,
-      //     reportProgress: request.reportProgress,
-      //   });
-      // });
     }
     if (!environment.production) {
       // Do something with the error
       // log.error('Request error', response);
     }
     throw response;
+  }
+
+  private logout() {
+    // TODO fix this fucking component
+    this.snackbar.info('Fix this error u layze mofaka! Just click dat button again!');
+    return throwError('Uncomment code below');
+    // TODO uncomment code below
+    // this.auth.logout();
+    // return throwError(new Error('Logged user out'));
+  }
+
+  private addHeader(request: HttpRequest<any>, token: string) {
+    const headers = request.headers.append('X-Token', token);
+    return request.clone({headers: headers});
   }
 
 }

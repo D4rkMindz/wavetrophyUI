@@ -10,6 +10,7 @@ import {EventModel} from '@app/shared/models/event.model';
 import {Location, LocationModel} from '@app/shared/models/location.model';
 import {Coordinate} from '@app/shared/models/coordinate.model';
 import {UrlModel} from '@app/shared/models/url.model';
+import {toDate} from '@app/app.module';
 
 @Injectable({
   providedIn: 'root'
@@ -48,7 +49,8 @@ export class LocationService {
               const eventModel = new EventModel(
                 event.hash,
                 event.day,
-                event.start,
+                toDate(event.start),
+                toDate(event.end),
                 event.title,
                 event.description,
                 eventImages
@@ -111,7 +113,9 @@ export class LocationService {
             const mapUrl = new UrlModel(res.url.android, res.url.ios);
             const textAddress = new AddressTextModel(zipcode, city, street);
             const address = new AddressModel(coordinates.lat, coordinates.lon, mapUrl, textAddress);
-            return new LocationModel(res.hash, name, description, address, images, []);
+            const location = new LocationModel(res.location_hash, name, description, address, images, []);
+            console.log(location);
+            return location;
           }
           if ('validation' in res) {
             return res.validation;
@@ -120,7 +124,7 @@ export class LocationService {
       );
   }
 
-  public deleteLocation(trophyHash: string, groupHash: string, locationHash: string) {
+  public deleteLocation(trophyHash: string, groupHash: string, locationHash: string): Observable<string> {
     const url = `/trophies/${trophyHash}/groups/${groupHash}/locations/${locationHash}`;
     return this.http.delete(url)
       .pipe(
@@ -128,7 +132,7 @@ export class LocationService {
           if (res.status === 200) {
             return res.info;
           }
-          return false;
+          return extract('Could not delete location. Please make sure that you are connected to the internet');
         })
       );
   }

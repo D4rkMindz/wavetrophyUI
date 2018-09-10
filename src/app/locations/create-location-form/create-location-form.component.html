@@ -1,5 +1,7 @@
-<form fxFlex="1 1" [formGroup]="formGroup" (ngSubmit)="createLocation()" fxLayout="column" fxLayoutGap="1em"
-      fxFlexOffset="2em">
+<form fxFlex="0 0 100%"
+      [formGroup]="formGroup"
+      #createLocationDirective="ngForm"
+      (ngSubmit)="createLocation()" fxLayout="column" fxLayoutGap="1em">
 
   <mat-form-field>
     <input matInput formControlName="name" placeholder="Name">

@@ -1,21 +1,24 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { TranslateModule } from '@ngx-translate/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MaterialModule } from './material.module';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
+import {FormsModule} from '@angular/forms';
+import {HttpClientModule} from '@angular/common/http';
+import {TranslateModule} from '@ngx-translate/core';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MaterialModule} from './material.module';
 
-import { CoreModule } from '@app/core';
-import { SharedModule } from '@app/shared';
-import { HomeModule } from './home/home.module';
-import { AboutModule } from './about/about.module';
-import { LoginModule } from './login/login.module';
-import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
+import {CoreModule} from '@app/core';
+import {SharedModule} from '@app/shared';
+import {HomeModule} from './home/home.module';
+import {AboutModule} from './about/about.module';
+import {LoginModule} from './login/login.module';
+import {AppComponent} from './app.component';
+import {AppRoutingModule} from './app-routing.module';
 import {TrophiesModule} from '@app/trophies/trophies.module';
 import {GroupsModule} from '@app/groups/groups.module';
 import {LocationsModule} from '@app/locations/locations.module';
+import {EventsModule} from '@app/events/events.module';
+import * as moment from 'moment';
+import {Moment} from 'moment';
 
 @NgModule({
   imports: [
@@ -33,11 +36,19 @@ import {LocationsModule} from '@app/locations/locations.module';
     TrophiesModule,
     GroupsModule,
     LocationsModule,
+    EventsModule,
     AppRoutingModule,
   ],
   declarations: [AppComponent],
-  providers: [
-  ],
+  providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
+
+export function toDate(yyyyMmDd: string): Moment {
+  if (!yyyyMmDd) {
+    return null;
+  }
+  return moment(yyyyMmDd);
+}

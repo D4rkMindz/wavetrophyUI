@@ -1,0 +1,93 @@
+<form fxFlex="1 1"
+      [formGroup]="formGroup"
+      #createEventDirective="ngForm"
+      (ngSubmit)="createEvent()" fxLayout="column" fxLayoutGap="1em"
+      fxFlexOffset="2em">
+
+
+  <mat-form-field>
+    <input matInput formControlName="title" placeholder="{{'Title'|translate}}">
+    <mat-error *ngIf="formGroup.controls['title'].hasError('required')" translate>
+      Required
+    </mat-error>
+    <mat-error *ngIf="formGroup.controls['title'].hasError('minlength')" translate>
+      Minimum 3 characters
+    </mat-error>
+    <mat-error *ngIf="formGroup.controls['title'].hasError('maxlength')" translate>
+      Maximum 45 characters
+    </mat-error>
+    <mat-error *ngIf="formGroup.controls['title'].hasError('message')">
+      {{formGroup.controls['title'].getError('message')}}
+    </mat-error>
+  </mat-form-field>
+
+  <div fxLayout="row" fxLayoutGap="1em" stop-propagation>
+
+    <mat-form-field fxFlex="40">
+      <input matInput [matDatepicker]="startDate"
+             formControlName="startDate"
+             placeholder="{{'Choose a start date'|translate}}">
+      <mat-datepicker-toggle matSuffix [for]="startDate"></mat-datepicker-toggle>
+      <mat-datepicker #startDate type="datetime" clockStep="5"></mat-datepicker>
+      <mat-error *ngIf="formGroup.controls['startDate'].hasError('required')" translate>
+        Required
+      </mat-error>
+      <mat-error *ngIf="formGroup.controls['startDate'].hasError('message')">
+        {{formGroup.controls['startDate'].getError('message')}}
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field fxFlex="40">
+      <input matInput [matDatepicker]="endDate"
+             formControlName="endDate"
+             placeholder="{{'Choose a start date'|translate}}">
+      <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
+      <mat-datepicker #endDate type="datetime" clockStep="5"></mat-datepicker>
+      <mat-error *ngIf="formGroup.controls['endDate'].hasError('required')" translate>
+        Required
+      </mat-error>
+      <mat-error *ngIf="formGroup.controls['endDate'].hasError('message')">
+        {{formGroup.controls['endDate'].getError('message')}}
+      </mat-error>
+    </mat-form-field>
+
+
+    <mat-form-field fxFlex="20">
+      <input type="number" matInput formControlName="day" placeholder="{{'Day'|translate}}">
+      <mat-error *ngIf="formGroup.controls['endDate'].hasError('message')">
+        {{formGroup.controls['endDate'].getError('message')}}
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div fxLayout="row" fxLayoutGap="1em">
+    <mat-form-field fxFlex="100">
+      <textarea matInput placeholder="Optional description" formControlName="description"></textarea>
+      <mat-error *ngIf="formGroup.controls['description'].hasError('minlength')" translate>
+        Minimum 10 characters
+      </mat-error>
+      <mat-error *ngIf="formGroup.controls['description'].hasError('maxlength')" translate>
+        Maximum 1000 characters
+      </mat-error>
+      <mat-error *ngIf="formGroup.controls['description'].hasError('message')">
+        {{formGroup.controls['description'].getError('message')}}
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div fxLayout="row">
+    <button mat-raised-button type="button" (click)="uploadImages()" stop-propagation>Upload Images</button>
+  </div>
+
+  <mat-card class="image mat-elevation-z8" *ngFor="let image of images">
+    <mat-card-content>
+      <img (click)="removeImage(image.url)" mat-card-image src="{{env.baseUrl}}/{{image.url}}">
+    </mat-card-content>
+  </mat-card>
+
+  <button mat-raised-button type="submit" color="primary" [disabled]="formGroup.invalid || isLoading">
+    <app-loader class="inline-loader" [isLoading]="isLoading"></app-loader>
+    <span translate>Add</span>
+  </button>
+</form>
+

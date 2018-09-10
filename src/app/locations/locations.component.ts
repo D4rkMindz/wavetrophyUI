@@ -1,6 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatTable, MatTableDataSource} from '@angular/material';
-import {Group} from '../shared/models/group.model';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SnackbarService} from '../core/snackbar.service';
 import {LocationService} from '@app/locations/location.service';
@@ -32,11 +31,9 @@ export class LocationsComponent implements OnInit {
     this.groupHash = this.route.snapshot.paramMap.get('groupHash');
   }
 
-  uploadImages() {}
-
   ngOnInit() {
     this.locationService.getLocations(this.trophyHash, this.groupHash)
-      .subscribe((locations: Location[]|string) => {
+      .subscribe((locations: Location[] | string) => {
         this.isLoading = false;
         this._logger.debug('loaded locations', locations);
         if (typeof locations === 'string') {
@@ -54,11 +51,33 @@ export class LocationsComponent implements OnInit {
   }
 
   addLocation(location: Location) {
-    // TODO addLocation implement method that inserts the locaiton into the dataset
+    let data = [];
+    if (this.table.dataSource && this.table.dataSource['data']) {
+      data = this.table.dataSource['data'];
+    }
+    data = data.reverse();
+    this._logger.debug('Locationdata Data', data);
+    data.push(location);
+    data = data.reverse();
+    this.dataSource = new MatTableDataSource<Location>(data);
   }
 
   deleteLocation(hash: string) {
-    // TODO deleteLocation implement method that removes the location from the dataset
+    console.log(hash);
+    this.locationService.deleteLocation(this.trophyHash, this.groupHash, hash)
+      .subscribe((res: string) => {
+        if (res) {
+          let data = [];
+          if (this.table.dataSource && this.table.dataSource['data']) {
+            data = this.table.dataSource['data'];
+          }
+          data = data.filter((location: Location) => {
+            return location.hash !== hash;
+          });
+          this.dataSource = new MatTableDataSource<Location>(data);
+          this.snackbar.info(res);
+        }
+      });
   }
 
 }
