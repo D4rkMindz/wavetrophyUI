@@ -65,7 +65,7 @@ export class EventService {
       title: title,
       day: day,
       start: start.utc(false).format('X'),
-      end: end.utc(false).format(),
+      end: end.utc(false).format('X'),
       description: description,
       images: parsedImages,
     };

@@ -40,7 +40,7 @@
     <mat-form-field fxFlex="40">
       <input matInput [matDatepicker]="endDate"
              formControlName="endDate"
-             placeholder="{{'Choose a start date'|translate}}">
+             placeholder="{{'Choose a end date'|translate}}">
       <mat-datepicker-toggle matSuffix [for]="endDate"></mat-datepicker-toggle>
       <mat-datepicker #endDate type="datetime" clockStep="5"></mat-datepicker>
       <mat-error *ngIf="formGroup.controls['endDate'].hasError('required')" translate>
