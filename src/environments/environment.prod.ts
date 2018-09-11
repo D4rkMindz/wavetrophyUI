@@ -4,12 +4,12 @@ import env from './.env';
 export const environment = {
   production: true,
   version: env.npm_package_version,
-  serverUrl: 'https://api.wavetrophy.d4rkmindz.ch',
-  baseUrl: 'https://api.wavetrophy.d4rkmindz.ch/',
+  serverUrl: 'https://api.wavetrophy.d4rkmindz.ch/v1',
+  baseUrl: 'https://api.wavetrophy.d4rkmindz.ch',
   defaultLanguage: 'de-CH',
   supportedLanguages: [
     'en-US',
-    'fr-FR'
+    'de-CH'
   ],
   keys: {
     credentials: 'credentials',

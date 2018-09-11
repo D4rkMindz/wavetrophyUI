@@ -64,8 +64,8 @@ export class EventService {
     const data = {
       title: title,
       day: day,
-      start: start.utc(true).format('X'),
-      end: end.utc(true).format('X'),
+      start: start.utc(false).format('X'),
+      end: end.utc(false).format(),
       description: description,
       images: parsedImages,
     };
