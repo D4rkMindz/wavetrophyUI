@@ -128,3 +128,10 @@ Development, build and quality processes are based on [angular-cli](https://gith
 - [Updating dependencies and tools](docs/updating.md)
 - [Using a backend proxy for development](docs/backend-proxy.md)
 - [Browser routing](docs/routing.md)
+
+
+#### Deployment
+
+- npm run build
+- upload zip to /wavetrophy/htdocs
+- rm -rf public/ && mkdir public && unzip app.zip -d public/

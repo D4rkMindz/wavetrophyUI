@@ -10,7 +10,7 @@ export const environment = {
   production: false,
   version: env.npm_package_version + '-dev',
   serverUrl: 'https://wavetrophy.dev/v1',
-  baseUrl: 'https://wavetrophy.dev/',
+  baseUrl: 'https://wavetrophy.dev',
   defaultLanguage: 'en-US',
   supportedLanguages: [
     'en-US',

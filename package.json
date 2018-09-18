@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "ng": "ng",
-    "build": "npm run env -s && ng build --prod && cp -r ./dist/ ~/code/web/wavetrophy-ui && rm app.zip && cd ./dist/ && zip -r ../app.zip . && cd ..",
+    "build": "npm run env -s && ng build --prod && cp -r ./dist/ ~/code/web/wavetrophy-ui && rm app.zip && cd ./dist/ && zip -r ../app.zip . ../src/.htaccess && cd ..",
     "start": "npm run env -s && ng serve --live-reload --aot",
     "lint": "ng lint && stylelint \"src/**/*.scss\" --syntax scss && htmlhint \"src\" --config .htmlhintrc",
     "test": "npm run env -s && ng test",

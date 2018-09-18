@@ -56,11 +56,13 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
               console.log('Refreshed token', credentials);
               if (credentials.token) {
                 this.tokenSubject.next(credentials.token);
+
                 return next.handle(this.addHeader(request, credentials.token));
               }
               this.logout();
             }),
             catchError((err) => {
+              console.log('catched error:', err);
               return this.logout();
             }),
             finalize(() => {
@@ -95,7 +97,7 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
     // return throwError(new Error('Logged user out'));
   }
 
-  private addHeader(request: HttpRequest<any>, token: string) {
+  private addHeader(request: HttpRequest<any>, token: string): HttpRequest<any> {
     const headers = request.headers.append('X-Token', token);
     return request.clone({headers: headers});
   }
