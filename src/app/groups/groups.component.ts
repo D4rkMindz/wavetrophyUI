@@ -31,6 +31,12 @@ export class GroupsComponent implements OnInit {
   ngOnInit() {
     this.groupService.getGroups(this.trophyHash)
       .subscribe((groups: Group[]) => {
+        if (typeof groups === 'string') {
+          this.snackbar.info(groups);
+          this.isLoading = false;
+          this.groups = [];
+          return;
+        }
         this.groups = groups.reverse();
         this.dataSource = new MatTableDataSource<Group>(this.groups);
         this.isLoading = false;

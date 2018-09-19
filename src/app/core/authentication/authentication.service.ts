@@ -50,6 +50,7 @@ export class AuthenticationService {
       username: context.username,
       password: context.password,
     };
+    this.logger.debug('Refreshing token with ', data);
     return this.http.post<any>('/auth', JSON.stringify(data))
       .pipe(map(res => {
         this.logger.debug(res);
