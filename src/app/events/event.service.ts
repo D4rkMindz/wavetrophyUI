@@ -41,7 +41,7 @@ export class EventService {
           return events;
         }),
         catchError(() => {
-          return of(extract('Could not load any locations. Please create some'));
+          return of(extract('Could not load any events. Please create some'));
         }));
   }
 
