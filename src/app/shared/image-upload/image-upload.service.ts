@@ -1,11 +1,15 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpEventType, HttpRequest, HttpResponse} from '@angular/common/http';
 import {BehaviorSubject, Observable, Subject} from 'rxjs';
+import {Logger} from '@app/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ImageUploadService {
+
+  private logger: Logger = new Logger('IMAGE UPLOAD');
+
   constructor(private http: HttpClient) {
   }
 
@@ -41,7 +45,7 @@ export class ImageUploadService {
       };
     });
 
-    console.log(status);
+    this.logger.debug(status);
     return status;
   }
 }

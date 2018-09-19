@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
-import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
-import { includes } from 'lodash';
+import {Injectable} from '@angular/core';
+import {TranslateService, LangChangeEvent} from '@ngx-translate/core';
+import {includes} from 'lodash';
 
-import { Logger } from './logger.service';
+import {Logger} from './logger.service';
 import * as enUS from '../../translations/en-US.json';
 import * as deCH from '../../translations/de-CH.json';
+import {Moment} from 'moment';
+import * as moment from 'moment';
 
 const log = new Logger('I18nService');
 const languageKey = 'language';
@@ -43,7 +45,9 @@ export class I18nService {
     this.language = '';
 
     this.translateService.onLangChange
-      .subscribe((event: LangChangeEvent) => { localStorage.setItem(languageKey, event.lang); });
+      .subscribe((event: LangChangeEvent) => {
+        localStorage.setItem(languageKey, event.lang);
+      });
   }
 
   /**

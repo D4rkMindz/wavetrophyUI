@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {Trophy} from '@app/shared/models/trophy.model';
 import {MatTableDataSource} from '@angular/material';
 import {TrophyService} from '@app/trophies/trophy.service';
+import {Logger} from '@app/core';
 
 @Component({
   selector: 'app-trophies',
@@ -13,6 +14,7 @@ export class TrophiesComponent implements OnInit {
   trophies: Trophy[];
   dataSource: MatTableDataSource<Trophy> = new MatTableDataSource(null);
   displayedColumns = ['hash', 'name', 'country', 'action-edit', 'action-delete'];
+  private logger: Logger = new Logger('TROPHIES');
 
   constructor(private trophyService: TrophyService) {
   }
@@ -20,7 +22,7 @@ export class TrophiesComponent implements OnInit {
   ngOnInit() {
     this.trophyService.getTrophies()
       .subscribe((trophies: Trophy[]) => {
-        console.log(trophies);
+        this.logger.debug(trophies);
         this.trophies = trophies;
         this.dataSource = new MatTableDataSource<Trophy>(this.trophies);
         this.isLoading = false;
@@ -32,7 +34,6 @@ export class TrophiesComponent implements OnInit {
   }
 
   deleteTrophy(hash: string) {
-
     return true;
   }
 

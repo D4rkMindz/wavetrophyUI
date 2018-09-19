@@ -2,9 +2,9 @@ import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatTable, MatTableDataSource} from '@angular/material';
 import {ActivatedRoute, Router} from '@angular/router';
 import {SnackbarService} from '../core/snackbar.service';
-import {LocationService} from '@app/locations/location.service';
-import {Location} from '@app/shared/models/location.model';
-import {Logger} from '@app/core';
+import {LocationService} from './location.service';
+import {Location} from '../shared/models/location.model';
+import {Logger} from '../core';
 
 @Component({
   selector: 'app-locations',
@@ -21,7 +21,7 @@ export class LocationsComponent implements OnInit {
   trophyHash: string;
   groupHash: string;
 
-  private _logger = new Logger('LOCATIONS');
+  private logger = new Logger('LOCATIONS');
 
   constructor(public router: Router,
               private locationService: LocationService,
@@ -35,7 +35,7 @@ export class LocationsComponent implements OnInit {
     this.locationService.getLocations(this.trophyHash, this.groupHash)
       .subscribe((locations: Location[] | string) => {
         this.isLoading = false;
-        this._logger.debug('loaded locations', locations);
+        this.logger.debug('loaded locations', locations);
         if (typeof locations === 'string') {
           this.dataSource = new MatTableDataSource<Location>(null);
           this.snackbar.info(locations);
@@ -56,14 +56,14 @@ export class LocationsComponent implements OnInit {
       data = this.table.dataSource['data'];
     }
     data = data.reverse();
-    this._logger.debug('Locationdata Data', data);
+    this.logger.debug('Locationdata Data', data);
     data.push(location);
     data = data.reverse();
     this.dataSource = new MatTableDataSource<Location>(data);
   }
 
   deleteLocation(hash: string) {
-    console.log(hash);
+    this.logger.debug(hash);
     this.locationService.deleteLocation(this.trophyHash, this.groupHash, hash)
       .subscribe((res: string) => {
         if (res) {

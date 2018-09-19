@@ -1,17 +1,17 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {catchError, map} from 'rxjs/operators';
-import {Image, ImageModel} from '@app/shared/models/image.model';
-import {EventModel, WaveEvent} from '@app/shared/models/event.model';
 import {Observable, of} from 'rxjs';
-import {extract} from '@app/core';
+import {extract, Logger, toDate} from '@app/core';
 import {Moment} from 'moment';
-import {toDate} from '@app/app.module';
+import {EventModel, Image, ImageModel, WaveEvent} from '@app/shared';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EventService {
+
+  private logger: Logger = new Logger('EVENT');
 
   constructor(private http: HttpClient) {
   }
@@ -69,7 +69,7 @@ export class EventService {
       description: description,
       images: parsedImages,
     };
-    console.log(data);
+    this.logger.debug(data);
     const url = `/trophies/${trophyHash}/groups/${groupHash}/locations/${locationHash}/events`;
     return this.http.post(url, JSON.stringify(data))
       .pipe(

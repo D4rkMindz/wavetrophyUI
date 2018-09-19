@@ -12,10 +12,8 @@ import {catchError, filter, finalize, map, switchMap, take} from 'rxjs/operators
 
 import {environment} from '@env/environment';
 import {Logger} from '../logger.service';
-import {AuthenticationService, Credentials, extract} from '@app/core';
-import {SnackbarService} from '@app/core/snackbar.service';
-
-const log = new Logger('ErrorHandlerInterceptor');
+import {AuthenticationService, Credentials} from '../authentication/authentication.service';
+import {SnackbarService} from '../snackbar.service';
 
 /**
  * Adds a default error handler to all requests.
@@ -27,6 +25,7 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
   private http: HttpClient;
   private isRefreshingToken = false;
   private tokenSubject: BehaviorSubject<string> = new BehaviorSubject<string>(null);
+  private logger: Logger = new Logger('ERROR HANDLER INTERCEPTOR');
 
   constructor(inj: Injector, private snackbar: SnackbarService) {
     setTimeout(() => {
@@ -44,16 +43,16 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
   }
 
   private handleError(response: HttpEvent<any>, request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    log.debug(response);
+    this.logger.debug(response);
     if (response instanceof HttpErrorResponse && (response.status === 401 || response.status === 0)) {
       if (!this.isRefreshingToken) {
         this.isRefreshingToken = true;
         this.tokenSubject.next(null);
-        log.debug('Refreshing token');
+        this.logger.debug('Refreshing token');
         return this.auth.login(this.auth.credentials)
           .pipe(
             switchMap((credentials: Credentials) => {
-              console.log('Refreshed token', credentials);
+              this.logger.debug('Refreshed token', credentials);
               if (credentials.token) {
                 this.tokenSubject.next(credentials.token);
 
@@ -62,7 +61,7 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
               this.logout();
             }),
             catchError((err) => {
-              console.log('catched error:', err);
+              this.logger.debug('catched error:', err);
               return this.logout();
             }),
             finalize(() => {
@@ -70,7 +69,7 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
             })
           );
       } else {
-        console.log('triggered pipe');
+        this.logger.debug('triggered pipe');
         return this.tokenSubject.pipe(
           filter(token => token !== null),
           take(1),
@@ -83,7 +82,7 @@ export class ErrorHandlerInterceptor implements HttpInterceptor {
     }
     if (!environment.production) {
       // Do something with the error
-      // log.error('Request error', response);
+      // this.logger.error('Request error', response);
     }
     throw response;
   }

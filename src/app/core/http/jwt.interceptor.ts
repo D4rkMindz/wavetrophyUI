@@ -3,7 +3,6 @@ import {HttpEvent, HttpInterceptor, HttpHandler, HttpRequest} from '@angular/com
 import {Observable} from 'rxjs';
 
 import {environment} from '@env/environment';
-import {Credentials, Logger} from '@app/core';
 
 /**
  * Prefixes all requests with `environment.serverUrl`.

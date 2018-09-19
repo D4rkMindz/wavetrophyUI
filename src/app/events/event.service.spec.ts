@@ -1,6 +1,6 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { EventService } from './event.service';
+import { EventService } from './event.service'; // dont replace this with @app/events -> circular dependency
 
 describe('EventService', () => {
   beforeEach(() => {

@@ -1,16 +1,17 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
 
+// dont replace this with @app/events -> circular dependency
 import {EventsRoutingModule} from './events-routing.module';
 import {TranslateModule} from '@ngx-translate/core';
-import {CoreModule} from '../core';
-import {SharedModule} from '../shared';
+import {CoreModule} from '@app/core';
+import {SharedModule} from '@app/shared';
 import {FlexLayoutModule} from '@angular/flex-layout';
-import {MaterialModule} from '../material.module';
+import {MaterialModule} from '@app/material.module';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {EventsComponent} from './events.component';
 import {CreateEventFormComponent} from './create-event-form/create-event-form.component';
-import {EventService} from '@app/events/event.service';
+import {EventService} from './event.service';
 
 @NgModule({
   imports: [

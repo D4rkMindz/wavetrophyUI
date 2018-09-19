@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {MatSnackBar} from '@angular/material';
-import {extract} from '@app/core/i18n.service';
+import {extract} from './i18n.service';
 
 @Injectable()
 export class SnackbarService {

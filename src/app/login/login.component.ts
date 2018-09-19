@@ -19,6 +19,7 @@ export class LoginComponent implements OnInit {
   error: string;
   loginForm: FormGroup;
   isLoading = false;
+  private logger: Logger = new Logger('LOGIN');
 
   constructor(private router: Router,
               private formBuilder: FormBuilder,
@@ -37,10 +38,10 @@ export class LoginComponent implements OnInit {
         this.isLoading = false;
       }))
       .subscribe(credentials => {
-        console.log(`${credentials.username} successfully logged in`);
+        this.logger.debug(`${credentials.username} successfully logged in`);
         this.router.navigate(['/'], { replaceUrl: true });
       }, error => {
-        console.log(`Login error: ${error}`);
+        this.logger.debug(`Login error: ${error}`);
         this.error = error;
       });
   }

@@ -1,11 +1,9 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatTable, MatTableDataSource} from '@angular/material';
-import {Location} from '@app/shared/models/location.model';
-import {Logger} from '@app/core';
-import {SnackbarService} from '@app/core/snackbar.service';
-import {EventService} from '@app/events/event.service';
-import {WaveEvent} from '@app/shared/models/event.model';
+import {Logger, SnackbarService} from '@app/core';
+import {EventService} from './event.service'; // dont replace this with @app/events -> circular dependency
+import {WaveEvent} from '@app/shared';
 
 @Component({
   selector: 'app-events',
@@ -22,7 +20,7 @@ export class EventsComponent implements OnInit {
   groupHash: string;
   locationHash: string;
 
-  private _logger = new Logger('LOCATIONS');
+  private logger = new Logger('LOCATIONS');
 
   constructor(public router: Router,
               private eventService: EventService,
@@ -37,7 +35,7 @@ export class EventsComponent implements OnInit {
     this.eventService.getEvents(this.trophyHash, this.groupHash, this.locationHash)
       .subscribe((events: WaveEvent[] | string) => {
         this.isLoading = false;
-        this._logger.debug('loaded locations', events);
+        this.logger.debug('loaded locations', events);
         if (typeof events === 'string') {
           this.dataSource = new MatTableDataSource<WaveEvent>(null);
           this.snackbar.info(events);
@@ -58,14 +56,14 @@ export class EventsComponent implements OnInit {
       data = this.table.dataSource['data'];
     }
     data = data.reverse();
-    this._logger.debug('Event Data', data);
+    this.logger.debug('Event Data', data);
     data.push(event);
     data = data.reverse();
     this.dataSource = new MatTableDataSource<WaveEvent>(data);
   }
 
   deleteEvent(hash: string) {
-    console.log(hash);
+    this.logger.debug(hash);
     this.eventService.deleteEvent(this.trophyHash, this.groupHash, this.locationHash, hash)
       .subscribe((res: string) => {
         if (res) {

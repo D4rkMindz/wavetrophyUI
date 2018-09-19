@@ -1,7 +1,4 @@
-export * from './core.module';
 export * from './authentication/authentication.service';
-// export * from './authentication/authentication.service.mock';
-export * from './authentication/authentication.guard';
 export * from './i18n.service';
 export * from './http/http.service';
 export * from './http/http-cache.service';
@@ -12,3 +9,8 @@ export * from './http/jwt.interceptor';
 export * from './route.service';
 export * from './route-reusable-strategy';
 export * from './logger.service';
+export * from './shell/shell.component';
+export * from './shell/header/header.component';
+export * from './snackbar.service';
+export * from './functions/to-date';
+export * from './core.module';

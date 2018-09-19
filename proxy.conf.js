@@ -22,6 +22,8 @@ const proxyConfig = [
  * Configures a corporate proxy agent for the API proxy if needed.
  */
 function setupForCorporateProxy(proxyConfig) {
+  const logger = new Logger('PROXY');
+
   if (!Array.isArray(proxyConfig)) {
     proxyConfig = [proxyConfig];
   }
@@ -30,7 +32,7 @@ function setupForCorporateProxy(proxyConfig) {
   let agent = null;
 
   if (proxyServer) {
-    console.log(`Using corporate proxy server: ${proxyServer}`);
+    logger.debug(`Using corporate proxy server: ${proxyServer}`);
     agent = new HttpsProxyAgent(proxyServer);
     proxyConfig.forEach(entry => { entry.agent = agent; });
   }

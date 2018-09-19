@@ -1,4 +1,4 @@
-import { EventsModule } from './events.module';
+import { EventsModule } from './events.module'; // dont replace this with @app/events -> circular dependency
 
 describe('EventsModule', () => {
   let eventsModule: EventsModule;

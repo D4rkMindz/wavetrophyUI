@@ -1,11 +1,11 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
-import {LocationService} from '@app/locations/location.service';
-import {SnackbarService} from '@app/core/snackbar.service';
+import {LocationService} from '../location.service';
+import {SnackbarService} from '@app/core';
 import {Coordinate, CoordinateModel} from '@app/shared/models/coordinate.model';
 import {ImageUploadComponent} from '@app/shared/image-upload/image-upload.component';
 import {MatDialog} from '@angular/material';
-import {extract} from '@app/core';
+import {extract, Logger} from '../../core';
 import {Image, ImageModel} from '@app/shared/models/image.model';
 import {environment} from '@env/environment';
 import {Location} from '@app/shared/models/location.model';
@@ -26,6 +26,7 @@ export class CreateLocationFormComponent implements OnInit {
   addLocations: Coordinate[] = [];
   images: Image[] = [];
   env = environment;
+  private logger: Logger = new Logger('CREATE LOCATION FORM');
 
   constructor(private locationService: LocationService,
               private fb: FormBuilder,
@@ -73,7 +74,7 @@ export class CreateLocationFormComponent implements OnInit {
     dialogRef.afterClosed()
       .subscribe((images: Image[]) => {
         this.images.push(...images);
-        console.log('images', this.images);
+        this.logger.debug('images', this.images);
       });
   }
 
@@ -103,7 +104,7 @@ export class CreateLocationFormComponent implements OnInit {
     const coordinates = new CoordinateModel(coordinateLat, coordinateLon);
 
     const additionalStops = this.addLocations;
-    console.log(this.trophyHash, this.groupHash);
+    this.logger.debug(this.trophyHash, this.groupHash);
 
     this.locationService.createLocation(
       this.trophyHash,
@@ -118,7 +119,7 @@ export class CreateLocationFormComponent implements OnInit {
       images,
     )
       .subscribe((res: any) => {
-        console.log(res);
+        this.logger.debug(res);
         if ('hash' in res) {
           this.snackbar.info(extract(`Created location ${res.title}`));
           this.formGroup.reset();

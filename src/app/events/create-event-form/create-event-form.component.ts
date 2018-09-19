@@ -1,14 +1,10 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, NgForm, Validators} from '@angular/forms';
-import {WaveEvent} from '@app/shared/models/event.model';
-import {EventService} from '@app/events/event.service';
-import {ImageUploadComponent} from '@app/shared/image-upload/image-upload.component';
-import {Image, ImageModel} from '@app/shared/models/image.model';
+import {EventService} from '../event.service'; // dont replace this with @app/events -> circular dependency
 import {MatDialog} from '@angular/material';
-import {SnackbarService} from '@app/core/snackbar.service';
 import {environment} from '@env/environment';
-import {toDate} from '@app/app.module';
-import {extract} from '@app/core';
+import {extract, Logger, SnackbarService} from '@app/core';
+import {Image, ImageModel, ImageUploadComponent, WaveEvent} from '@app/shared';
 
 @Component({
   selector: 'app-create-event-form',
@@ -28,6 +24,8 @@ export class CreateEventFormComponent implements OnInit {
   images: Image[] = [];
   env = environment;
   isLoading = false;
+
+  private logger: Logger = new Logger('CREATE EVENT FORM');
 
   constructor(private eventService: EventService,
               private fb: FormBuilder,
@@ -60,7 +58,7 @@ export class CreateEventFormComponent implements OnInit {
     dialogRef.afterClosed()
       .subscribe((images: Image[]) => {
         this.images.push(...images);
-        console.log('images', this.images);
+        this.logger.debug('images', this.images);
       });
   }
 
@@ -100,7 +98,7 @@ export class CreateEventFormComponent implements OnInit {
       images
     ).subscribe((res: any) => {
 
-      console.log(res);
+      this.logger.debug(res);
       if ('hash' in res) {
         this.snackbar.info(extract(`Created event ${res.title}`));
         this.formGroup.reset();

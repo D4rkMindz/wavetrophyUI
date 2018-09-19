@@ -3,8 +3,6 @@ import { Router, CanActivate } from '@angular/router';
 
 import { AuthenticationService } from './authentication.service';
 
-// const log = new Logger('AuthenticationGuard');
-
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
 
@@ -16,7 +14,6 @@ export class AuthenticationGuard implements CanActivate {
       return true;
     }
 
-    // log.debug('Not authenticated, redirecting...');
     this.router.navigate(['/login'], { replaceUrl: true });
     return false;
   }

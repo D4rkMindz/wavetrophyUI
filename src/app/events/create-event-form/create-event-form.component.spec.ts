@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CreateEventFormComponent } from './create-event-form.component';
+import { CreateEventFormComponent } from './create-event-form.component'; // dont replace this with @app/events -> circular dependency
 
 describe('CreateEventFormComponent', () => {
   let component: CreateEventFormComponent;

@@ -1,11 +1,11 @@
 import {Injectable} from '@angular/core';
 import {Observable, of, throwError} from 'rxjs';
-import {Credentials, extract} from '@app/core';
-import {Logger} from '../logger.service';
+import {extract} from '../i18n.service'; // dont replace this with @app/core -> circular dependency
 import {environment} from '@env/environment';
-import {catchError, map} from 'rxjs/operators';
-import {HttpClient, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {map} from 'rxjs/operators';
+import {HttpClient} from '@angular/common/http';
 import {Router} from '@angular/router';
+import {Logger} from '../logger.service'; // dont replace this with @app/core -> circular dependency
 
 export interface Credentials {
   username: string;
@@ -21,8 +21,6 @@ export interface LoginContext {
   remember?: boolean;
 }
 
-const log = new Logger('Authentication');
-
 /**
  * Provides a base for authentication workflow.
  * The Credentials interface as well as login/logout methods should be replaced with proper implementation.
@@ -31,6 +29,7 @@ const log = new Logger('Authentication');
 export class AuthenticationService {
   private readonly _credentialsKey?: string = null;
   private _credentials: Credentials | null;
+  private logger: Logger = new Logger('AUTHENTICATION SERVICE');
 
   constructor(private http: HttpClient, private router: Router) {
     this._credentialsKey = environment.keys.credentials;
@@ -53,7 +52,7 @@ export class AuthenticationService {
     };
     return this.http.post<any>('/auth', JSON.stringify(data))
       .pipe(map(res => {
-        console.log(res);
+        this.logger.debug(res);
         if (res.code === 200) {
           const credentials: Credentials = {
             username: data.username,

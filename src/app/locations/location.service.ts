@@ -2,20 +2,21 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {catchError, map} from 'rxjs/operators';
 import {Observable, of} from 'rxjs';
-import {extract} from '@app/core';
-import {AddressModel} from '@app/shared/models/address.model';
-import {AddressTextModel} from '@app/shared/models/address-text.model';
-import {Image, ImageModel} from '@app/shared/models/image.model';
-import {EventModel} from '@app/shared/models/event.model';
-import {Location, LocationModel} from '@app/shared/models/location.model';
-import {Coordinate} from '@app/shared/models/coordinate.model';
-import {UrlModel} from '@app/shared/models/url.model';
-import {toDate} from '@app/app.module';
+import {extract, Logger, toDate} from '@app/core';
+import {AddressModel} from '../shared/models/address.model';
+import {AddressTextModel} from '../shared/models/address-text.model';
+import {Image, ImageModel} from '../shared/models/image.model';
+import {EventModel} from '../shared/models/event.model';
+import {Location, LocationModel} from '../shared/models/location.model';
+import {Coordinate} from '../shared/models/coordinate.model';
+import {UrlModel} from '../shared/models/url.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LocationService {
+
+  private logger: Logger = new Logger('LOCATION SERVICE');
 
   constructor(private http: HttpClient) {
   }
@@ -87,7 +88,7 @@ export class LocationService {
     description: string,
     images: Image[],
   ) {
-    console.log(trophyHash, groupHash);
+    this.logger.debug(trophyHash, groupHash);
     const parsedImages = [];
     for (const image of images) {
       parsedImages.push({url: image.url});
@@ -104,7 +105,7 @@ export class LocationService {
       description: description,
       images: images,
     };
-    console.log(data);
+    this.logger.debug(data);
     const url = `/trophies/${trophyHash}/groups/${groupHash}/locations`;
     return this.http.post(url, JSON.stringify(data))
       .pipe(
@@ -114,7 +115,7 @@ export class LocationService {
             const textAddress = new AddressTextModel(zipcode, city, street);
             const address = new AddressModel(coordinates.lat, coordinates.lon, mapUrl, textAddress);
             const location = new LocationModel(res.location_hash, name, description, address, images, []);
-            console.log(location);
+            this.logger.debug(location);
             return location;
           }
           if ('validation' in res) {

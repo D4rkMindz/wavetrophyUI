@@ -19,7 +19,7 @@ export class GroupsComponent implements OnInit {
   displayedColumns = ['hash', 'name', 'action-edit', 'action-delete'];
   trophyHash: string;
 
-  private _logger: Logger = new Logger('Groups');
+  private logger: Logger = new Logger('Groups');
 
   constructor(public router: Router,
               private groupService: GroupService,
@@ -48,14 +48,14 @@ export class GroupsComponent implements OnInit {
       data = this.table.dataSource.data;
     }
     data = data.reverse();
-    this._logger.debug('Group Data', data);
+    this.logger.debug('Group Data', data);
     data.push(group);
     data = data.reverse();
     this.dataSource = new MatTableDataSource<Group>(data);
   }
 
   deleteGroup(hash: string) {
-    console.log(hash);
+    this.logger.debug(hash);
     this.groupService.deleteGroup(this.trophyHash, hash)
       .subscribe((res: string) => {
         if (res) {
